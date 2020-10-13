@@ -1,0 +1,9 @@
+[requires]
+irrlicht-engine/1.0.0@train-it/stable
+
+[generators]
+cmake
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin
