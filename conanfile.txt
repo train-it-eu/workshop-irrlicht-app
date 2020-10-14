@@ -1,5 +1,5 @@
 [requires]
-irrlicht-engine/2.0.0@train-it/stable
+irrlicht-engine/3.0.0@train-it/stable
 
 [generators]
 cmake
