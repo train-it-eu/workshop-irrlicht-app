@@ -31,7 +31,7 @@ bool run()
 
   std::cout << "Irrlicht path: " << IRRLICHT_PATH << '\n';
 
-  // create ENGINE and all its components
+  // create ENGINE and all its components (font, laser, light, camera)
 
   // position camera [pos: 50, 50, -60; target: -70, 30, -60]
 
