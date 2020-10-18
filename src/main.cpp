@@ -71,11 +71,13 @@ void add_objects(workshop::engine& engine)
 bool run()
 {
   try {
+    using namespace workshop;
+
     // create ENGINE and all its components (font, laser, light, camera)
-    workshop::engine engine(IRRLICHT_PATH,
-                            800, 600, 32, false,
-                            // 2560, 1440, 32, true,
-                            true, true, workshop::engine::device_type::opengl);
+    engine engine(IRRLICHT_PATH,
+                  // window_params{window_width(800), window_height(600)},
+                  full_screen_params{{window_width(2560), window_height(1440)}, bits_per_pixel::bpp_32},
+                  stencil_buffer(true), vertical_sync(true), engine::device_type::opengl);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
     auto& camera = engine.camera();
@@ -86,7 +88,7 @@ bool run()
     add_objects(engine);
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
-    std::optional<workshop::object_handle> selected_object;
+    std::optional<object_handle> selected_object;
     engine.run([&] {
       const auto& obj = engine.selected_object();
       if (!(obj == selected_object)) {
