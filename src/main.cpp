@@ -21,7 +21,6 @@
  */
 
 #include <engine.h>
-#include <cassert>
 #include <iostream>
 
 namespace {
