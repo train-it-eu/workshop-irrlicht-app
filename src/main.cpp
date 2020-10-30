@@ -89,7 +89,7 @@ bool run()
     std::optional<workshop::object_handle> selected_object;
     engine.run([&] {
       const auto& obj = engine.selected_object();
-      if (!(obj == selected_object)) {
+      if (obj != selected_object) {
         if (selected_object)
           selected_object->highlight(false);
         selected_object = obj;
