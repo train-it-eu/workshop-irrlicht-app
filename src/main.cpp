@@ -100,6 +100,8 @@ void add_objects(workshop::engine& engine)
     });
 
     return true;
+  } catch (const workshop::invalid_path& ex) {
+    std::cerr << "Invalid path provided: " << ex.what() << "\n";
   } catch (const std::exception& ex) {
     log_exception(ex);
   } catch (...) {
