@@ -36,35 +36,50 @@ void log_exception(const std::exception& ex, int level = 0)
   }
 }
 
-workshop::object_handle add_object(workshop::engine& engine, workshop::object_handle::type type,
-                                   const std::string& name, float x, float y, float z)
+[[nodiscard]] nonstd::expected<workshop::object_handle, std::error_code> add_object(workshop::engine& engine,
+                                                                                    workshop::object_handle::type type,
+                                                                                    const std::string& name, float x,
+                                                                                    float y, float z)
 {
-  try {
-    workshop::object_handle obj(engine, type, name);
-    workshop::selector selector(engine, obj);
-    obj.selector(selector);
-    obj.position(x, y, z);
+  auto obj = workshop::object_handle::create(engine, type, name);
+  if (!obj) {
+    if (obj.error() == workshop::error_condition::invalid_path)
+      std::cerr << "ERROR: Please check that all the files for " << name << " object are provided\n";
+    else
+      std::cerr << "ERROR: " << name << " object creation failed: " << obj.error().message() << "\n";
     return obj;
-  } catch (...) {
-    std::throw_with_nested(std::runtime_error("'" + name + "' object creation failed"));
   }
+  workshop::selector selector(engine, *obj);
+  obj->selector(selector);
+  obj->position(x, y, z);
+  return obj;
 }
 
-void add_objects(workshop::engine& engine)
+[[nodiscard]] bool add_objects(workshop::engine& engine)
 {
   // add FAERIE at -90, -15, -140
-  add_object(engine, workshop::object_handle::type::faerie, "Maja", -90, -15, -140);
+  auto faerie = add_object(engine, workshop::object_handle::type::faerie, "Maja", -90, -15, -140);
+  if (!faerie)
+    return false;
 
   // add NINJA at -75, -66, -80 and rotate 0, 90, 0
   auto ninja = add_object(engine, workshop::object_handle::type::ninja, "Jacek", -75, -66, -80);
-  ninja.rotation(0, 90, 0);
+  if (!ninja)
+    return false;
+  ninja->rotation(0, 90, 0);
 
   // add DWARF at -70, -66, -30 and rotate 0, -90, 0
   auto dwarf = add_object(engine, workshop::object_handle::type::dwarf, "Placek", -70, -66, -30);
-  dwarf.rotation(0, -90, 0);
+  if (!dwarf)
+    return false;
+  dwarf->rotation(0, -90, 0);
 
   // add YODAN at -90, -25, 20
-  add_object(engine, workshop::object_handle::type::yodan, "Reksio", -90, -25, 20);
+  auto yodan = add_object(engine, workshop::object_handle::type::yodan, "Reksio", -90, -25, 20);
+  if (!yodan)
+    return false;
+
+  return true;
 }
 
 [[nodiscard]] bool run()
@@ -74,8 +89,8 @@ void add_objects(workshop::engine& engine)
 
     // create ENGINE and all its components (font, laser, light, camera)
     engine engine(IRRLICHT_PATH,
-                  // window_params{window_width(800), window_height(600)},
-                  full_screen_params{{window_width(2560), window_height(1440)}, bits_per_pixel::bpp_32},
+                  window_params{window_width(800), window_height(600)},
+                  // full_screen_params{{window_width(2560), window_height(1440)}, bits_per_pixel::bpp_32},
                   stencil_buffer(true), vertical_sync(true), engine::device_type::opengl);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
@@ -84,7 +99,8 @@ void add_objects(workshop::engine& engine)
     camera.target(-70, 30, -60);
 
     // add all objects and their selectors
-    add_objects(engine);
+    if (!add_objects(engine))
+      return false;
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
     std::optional<object_handle> selected_object;
