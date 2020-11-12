@@ -74,8 +74,8 @@ void add_objects(workshop::engine& engine)
 
     // create ENGINE and all its components (font, laser, light, camera)
     engine engine(IRRLICHT_PATH,
-                  // window_params{window_width(800), window_height(600)},
-                  full_screen_params{{window_width(2560), window_height(1440)}, bits_per_pixel::bpp_32},
+                  window_params{window_width(800), window_height(600)},
+                  // full_screen_params{{window_width(2560), window_height(1440)}, bits_per_pixel::bpp_32},
                   stencil_buffer(true), vertical_sync(true), engine::device_type::opengl);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
