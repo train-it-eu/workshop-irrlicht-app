@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-#include <engine.h>
+#include <irrlicht-engine/engine.h>
 #include <iostream>
 
 namespace {

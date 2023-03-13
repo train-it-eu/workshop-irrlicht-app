@@ -1,9 +1,10 @@
 [requires]
+irrlicht/1.8.4@mpusz/testing
 irrlicht-engine/1.0.0@train-it/stable
 
-[generators]
-cmake
+[layout]
+cmake_layout
 
-[imports]
-bin, *.dll -> ./bin
-lib, *.dylib* -> ./bin
+[generators]
+CMakeDeps
+CMakeToolchain

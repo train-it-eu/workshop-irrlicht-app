@@ -21,19 +21,19 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.8)
-project(app)
+project(irrlicht-app)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
+find_package(irrlicht CONFIG REQUIRED)
+find_package(irrlicht-engine CONFIG REQUIRED)
 
-add_executable(app)
-target_sources(app
+add_executable(irrlicht-app)
+target_sources(irrlicht-app
   PRIVATE
     src/main.cpp
 )
-target_compile_features(app PUBLIC cxx_std_20)
-target_compile_definitions(app PRIVATE IRRLICHT_PATH="${CONAN_IRRLICHT_ROOT}")
-target_link_libraries(app
+target_compile_definitions(irrlicht-app PRIVATE IRRLICHT_PATH="${CONAN_IRRLICHT_ROOT}")
+target_link_libraries(irrlicht-app
   PRIVATE
-    CONAN_PKG::irrlicht-engine
+    irrlicht::engine
+    irrlicht::irrlicht
 )
