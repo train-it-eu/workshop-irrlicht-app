@@ -23,17 +23,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(irrlicht-app)
 
-find_package(irrlicht CONFIG REQUIRED)
 find_package(irrlicht-engine CONFIG REQUIRED)
 
 add_executable(irrlicht-app)
-target_sources(irrlicht-app
-  PRIVATE
-    src/main.cpp
-)
+target_sources(irrlicht-app PRIVATE src/main.cpp)
 target_compile_definitions(irrlicht-app PRIVATE IRRLICHT_PATH="${CONAN_IRRLICHT_ROOT}")
-target_link_libraries(irrlicht-app
-  PRIVATE
-    irrlicht::engine
-    irrlicht::irrlicht
-)
+target_link_libraries(irrlicht-app PRIVATE irrlicht::engine)

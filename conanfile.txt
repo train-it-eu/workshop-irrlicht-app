@@ -1,5 +1,4 @@
 [requires]
-irrlicht/1.8.4@mpusz/testing
 irrlicht-engine/1.0.0@train-it/stable
 
 [layout]
