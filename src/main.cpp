@@ -58,18 +58,18 @@ void add_objects(workshop::engine* engine)
   assert(engine);
 
   // add FAERIE at -90, -15, -140
-  add_object(engine, workshop::object_handle::type_faerie, "Maja", -90, -15, -140);
+  add_object(engine, workshop::object_handle::type::faerie, "Maja", -90, -15, -140);
 
   // add NINJA at -75, -66, -80 and rotate 0, 90, 0
-  auto ninja = add_object(engine, workshop::object_handle::type_ninja, "Jacek", -75, -66, -80);
+  auto ninja = add_object(engine, workshop::object_handle::type::ninja, "Jacek", -75, -66, -80);
   ninja.rotation(0, 90, 0);
 
   // add DWARF at -70, -66, -30 and rotate 0, -90, 0
-  auto dwarf = add_object(engine, workshop::object_handle::type_dwarf, "Placek", -70, -66, -30);
+  auto dwarf = add_object(engine, workshop::object_handle::type::dwarf, "Placek", -70, -66, -30);
   dwarf.rotation(0, -90, 0);
 
   // add YODAN at -90, -25, 20
-  add_object(engine, workshop::object_handle::type_yodan, "Reksio", -90, -25, 20);
+  add_object(engine, workshop::object_handle::type::yodan, "Reksio", -90, -25, 20);
 }
 
 bool run()
@@ -79,7 +79,7 @@ bool run()
   try {
     // create ENGINE and all its components (font, laser, light, camera)
     // Irrlicht media files are located at IRRLICHT_MEDIA_PATH
-    workshop::engine::device_type devType = workshop::engine::device_opengl;
+    workshop::engine::device_type devType = workshop::engine::device_type::opengl;
     workshop::engine engine(IRRLICHT_MEDIA_PATH, 800, 600, 32, false, true, true, &devType);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
@@ -91,30 +91,23 @@ bool run()
     add_objects(&engine);
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
-    while (engine.run()) {
-      if (engine.window_active()) {
-        engine.begin_scene();
-
-        workshop::object_handle* obj = engine.selected_object();
-        if (obj != selected_object) {
-          if (selected_object) {
-            selected_object->highlight(false);
-            delete selected_object;
-          }
-
-          selected_object = obj;
-          if (selected_object) selected_object->highlight(true);
-        }
+    engine.run([&] {
+      workshop::object_handle* obj = engine.selected_object();
+      if (obj != selected_object) {
         if (selected_object) {
-          std::string string;
-          selected_object->name(&string);
-          engine.draw_label(string);
+          selected_object->highlight(false);
+          delete selected_object;
         }
 
-        engine.end_scene();
-      } else
-        engine.yield();
-    }
+        selected_object = obj;
+        if (selected_object) selected_object->highlight(true);
+      }
+      if (selected_object) {
+        std::string string;
+        selected_object->name(&string);
+        engine.draw_label(string);
+      }
+    });
 
     if (selected_object) delete selected_object;
 
