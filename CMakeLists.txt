@@ -27,5 +27,5 @@ find_package(irrlicht-engine CONFIG REQUIRED)
 
 add_executable(irrlicht-app)
 target_sources(irrlicht-app PRIVATE src/main.cpp)
-target_compile_definitions(irrlicht-app PRIVATE IRRLICHT_PATH="${CONAN_IRRLICHT_ROOT}")
+target_compile_definitions(irrlicht-app PRIVATE IRRLICHT_MEDIA_PATH="${irrlicht_RES_DIRS_RELEASE}")
 target_link_libraries(irrlicht-app PRIVATE irrlicht::engine)
