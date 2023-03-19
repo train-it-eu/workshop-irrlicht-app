@@ -58,11 +58,11 @@ void add_objects(workshop::engine& engine)
 
   // add NINJA at -75, -66, -80 and rotate 0, 90, 0
   auto ninja = add_object(engine, workshop::object_handle::type::ninja, "Jacek", -75, -66, -80);
-  ninja.rotation(0, 90, 0);
+  ninja.rotation(workshop::angle{0}, workshop::angle{90}, workshop::angle{0});
 
   // add DWARF at -70, -66, -30 and rotate 0, -90, 0
   auto dwarf = add_object(engine, workshop::object_handle::type::dwarf, "Placek", -70, -66, -30);
-  dwarf.rotation(0, -90, 0);
+  dwarf.rotation(workshop::angle{0}, workshop::angle{-90}, workshop::angle{0});
 
   // add YODAN at -90, -25, 20
   add_object(engine, workshop::object_handle::type::yodan, "Reksio", -90, -25, 20);
