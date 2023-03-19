@@ -37,15 +37,13 @@ void log_exception(const std::exception& ex, int level = 0)
   }
 }
 
-workshop::object_handle add_object(workshop::engine* engine, workshop::object_handle::type type,
+workshop::object_handle add_object(workshop::engine& engine, workshop::object_handle::type type,
                                    const std::string& name, float x, float y, float z)
 {
-  assert(engine);
-
   try {
-    workshop::object_handle obj(engine, type, &name);
-    workshop::selector selector(engine, &obj);
-    obj.selector(&selector);
+    workshop::object_handle obj(engine, type, name);
+    workshop::selector selector(engine, obj);
+    obj.selector(selector);
     obj.position(x, y, z);
     return obj;
   } catch (...) {
@@ -53,10 +51,8 @@ workshop::object_handle add_object(workshop::engine* engine, workshop::object_ha
   }
 }
 
-void add_objects(workshop::engine* engine)
+void add_objects(workshop::engine& engine)
 {
-  assert(engine);
-
   // add FAERIE at -90, -15, -140
   add_object(engine, workshop::object_handle::type::faerie, "Maja", -90, -15, -140);
 
@@ -74,42 +70,32 @@ void add_objects(workshop::engine* engine)
 
 bool run()
 {
-  workshop::object_handle* selected_object = nullptr;
-
   try {
     // create ENGINE and all its components (font, laser, light, camera)
     // Irrlicht media files are located at IRRLICHT_MEDIA_PATH
-    workshop::engine::device_type devType = workshop::engine::device_type::opengl;
-    workshop::engine engine(IRRLICHT_MEDIA_PATH, 800, 600, 32, false, true, true, &devType);
+    workshop::engine engine(IRRLICHT_MEDIA_PATH, 800, 600, 32, false, true, true,
+                            workshop::engine::device_type::opengl);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
-    auto* camera = engine.camera();
-    camera->position(50, 50, -60);
-    camera->target(-70, 30, -60);
+    auto& camera = engine.camera();
+    camera.position(50, 50, -60);
+    camera.target(-70, 30, -60);
 
     // add all objects and their selectors
-    add_objects(&engine);
+    add_objects(engine);
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
+    std::optional<workshop::object_handle> selected_object;
     engine.run([&] {
-      workshop::object_handle* obj = engine.selected_object();
+      const auto& obj = engine.selected_object();
       if (obj != selected_object) {
-        if (selected_object) {
-          selected_object->highlight(false);
-          delete selected_object;
-        }
-
+        if (selected_object) selected_object->highlight(false);
         selected_object = obj;
         if (selected_object) selected_object->highlight(true);
       }
-      if (selected_object) {
-        std::string string;
-        selected_object->name(&string);
-        engine.draw_label(string);
-      }
-    });
 
-    if (selected_object) delete selected_object;
+      if (selected_object) engine.draw_label(selected_object->name());
+    });
 
     return true;
   } catch (const std::exception& ex) {
@@ -117,8 +103,6 @@ bool run()
   } catch (...) {
     std::cerr << "ERROR: Unknown exception caught\n";
   }
-
-  if (selected_object) delete selected_object;
 
   return false;
 }
