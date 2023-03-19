@@ -29,7 +29,7 @@ bool run()
 {
   bool status = true;
 
-  std::cout << "Irrlicht path: " << IRRLICHT_PATH << '\n';
+  std::cout << "Irrlicht media path: " << IRRLICHT_MEDIA_PATH << '\n';
 
   // create ENGINE and all its components (font, laser, light, camera)
   // Irrlicht media files are located at IRRLICHT_MEDIA_PATH
