@@ -68,7 +68,7 @@ void add_objects(workshop::engine& engine)
   add_object(engine, workshop::object_handle::type::yodan, "Reksio", -90, -25, 20);
 }
 
-bool run()
+[[nodiscard]] bool run()
 {
   try {
     using namespace workshop;
