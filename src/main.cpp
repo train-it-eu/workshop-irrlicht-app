@@ -71,10 +71,12 @@ void add_objects(workshop::engine& engine)
 bool run()
 {
   try {
+    using namespace workshop;
+
     // create ENGINE and all its components (font, laser, light, camera)
     // Irrlicht media files are located at IRRLICHT_MEDIA_PATH
-    workshop::engine engine(IRRLICHT_MEDIA_PATH, 800, 600, 32, false, true, true,
-                            workshop::engine::device_type::opengl);
+    engine engine(IRRLICHT_MEDIA_PATH, window_params{window_width(800), window_height(600)}, stencil_buffer(true),
+                  vertical_sync(true), engine::device_type::opengl);
 
     // position camera [pos: 50, 50, -60; target: -70, 30, -60]
     auto& camera = engine.camera();
@@ -85,7 +87,7 @@ bool run()
     add_objects(engine);
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
-    std::optional<workshop::object_handle> selected_object;
+    std::optional<object_handle> selected_object;
     engine.run([&] {
       const auto& obj = engine.selected_object();
       if (obj != selected_object) {
