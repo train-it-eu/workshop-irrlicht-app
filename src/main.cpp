@@ -88,18 +88,25 @@ void add_objects(workshop::engine& engine)
 
     // run 3D engine main loop and add user code to highlight and print the name of the selected object
     std::optional<object_handle> selected_object;
-    engine.run([&] {
-      const auto& obj = engine.selected_object();
-      if (obj != selected_object) {
-        if (selected_object) selected_object->highlight(false);
-        selected_object = obj;
-        if (selected_object) selected_object->highlight(true);
-      }
 
-      if (selected_object) engine.draw_label(selected_object->name());
-    });
+    std::error_code ec;
+    engine.run(
+      [&](std::error_code&) {
+        const auto& obj = engine.selected_object();
+        if (obj != selected_object) {
+          if (selected_object) selected_object->highlight(false);
+          selected_object = obj;
+          if (selected_object) selected_object->highlight(true);
+        }
 
-    return true;
+        if (selected_object) engine.draw_label(selected_object->name());
+      },
+      ec);
+
+    if (ec) {
+      std::cerr << "ERROR: " << ec.message() << "\n";
+    } else
+      return true;
   } catch (const workshop::invalid_path& ex) {
     std::cerr << "Invalid path provided: " << ex.what() << "\n";
   } catch (const std::exception& ex) {
